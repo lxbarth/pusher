@@ -1,0 +1,4 @@
+name = "Pusher"
+description = "Pushes nodes. For now."
+dependencies[] = push_hub
+core = 6.x
