@@ -29,7 +29,7 @@ function pusher_nodeapi($node, $op) {
  * Send a notification to all subscribers.
  */
 function pusher_notify() {
-  push_hub_notify(url('realtime.xml', array('absolute' => TRUE)));
+  push_hub_notify(url('realtime.xml', array('absolute' => TRUE)), NULL, TRUE);
 }
 
 /**
