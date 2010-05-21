@@ -30,7 +30,6 @@ function pusher_nodeapi($node, $op) {
  */
 function pusher_notify($nid) {
   $changed = pusher_feed(array($nid));
-  error_log($changed);
   push_hub_notify(url('realtime.xml', array('absolute' => TRUE)), $changed, TRUE);
 }
 
