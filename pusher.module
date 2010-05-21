@@ -29,6 +29,7 @@ function pusher_nodeapi($node, $op) {
  * Send a notification to all subscribers.
  */
 function pusher_notify($nid) {
+  node_load(NULL, NULL, TRUE);
   $changed = pusher_feed(array($nid));
   push_hub_notify(url('realtime.xml', array('absolute' => TRUE)), $changed, TRUE);
 }
