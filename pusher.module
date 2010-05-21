@@ -7,7 +7,7 @@ function pusher_menu() {
   $items = array();
   $items['realtime.xml'] = array(
     'title' => 'Realtime RSS feed',
-    'page callback' => 'pusher_feed',
+    'page callback' => 'pusher_feed_page',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
@@ -20,7 +20,7 @@ function pusher_menu() {
 function pusher_nodeapi($node, $op) {
   if ($op == 'insert' || $op == 'update') {
     if ($node->status && $node->promote) {
-      pusher_notify();
+      pusher_notify($node->nid);
     }
   }
 }
@@ -28,14 +28,24 @@ function pusher_nodeapi($node, $op) {
 /**
  * Send a notification to all subscribers.
  */
-function pusher_notify() {
-  push_hub_notify(url('realtime.xml', array('absolute' => TRUE)), NULL, TRUE);
+function pusher_notify($nid) {
+  $changed = pusher_feed(array($nid));
+  error_log($changed);
+  push_hub_notify(url('realtime.xml', array('absolute' => TRUE)), $changed, TRUE);
+}
+
+/**
+ * Page callback for rendering a feed.
+ */
+function pusher_feed_page() {
+  drupal_set_header('Content-Type: application/rss+xml; charset=utf-8');
+  print pusher_feed();
 }
 
 /**
  * Recognize node_feed()?
  *
- * Change: feed_url and hub_url embedding.
+ * Change: feed_url and hub_url embedding, don't print to screen.
  */
 function pusher_feed($nids = FALSE, $channel = array()) {
   global $base_url, $language;
@@ -137,6 +147,5 @@ function pusher_feed($nids = FALSE, $channel = array()) {
   $output .= format_rss_channel($channel['title'], $channel['link'], $channel['description'], $items, $channel['language']);
   $output .= "</rss>\n";
 
-  drupal_set_header('Content-Type: application/rss+xml; charset=utf-8');
-  print $output;
+  return $output;
 }
